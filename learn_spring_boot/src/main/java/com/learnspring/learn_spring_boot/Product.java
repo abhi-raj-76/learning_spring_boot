@@ -1,13 +1,19 @@
 package com.learnspring.learn_spring_boot;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /* this is dummy database for product beacause we havn't added the actual database right now */
 @Data 
+@NoArgsConstructor
 @AllArgsConstructor
+@Entity
 public class Product 
 {
+    @Id
     private int proId;
     private String proName;
     private int proPrice;
