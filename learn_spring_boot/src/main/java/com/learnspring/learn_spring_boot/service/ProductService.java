@@ -1,11 +1,13 @@
 package com.learnspring.learn_spring_boot.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.learnspring.learn_spring_boot.Product;
 import com.learnspring.learn_spring_boot.repository.ProductRepo;
@@ -32,13 +34,16 @@ public class ProductService
         /*return products.stream()
         .filter(p -> p.getProId() == id)
         .findFirst().get(); /*stream API */
-        return repo.findById(id).orElse(new Product(id, null, id));
+        return repo.findById(id).orElse(new Product(id, null, id,null,null,null));
     }
 
-    public void addProduct(Product prod)
+    public Product addProduct(Product prod, MultipartFile imgfile) throws IOException
     {
         //products.add(prod);
-        repo.save(prod);
+        prod.setImageName(imgfile.getOriginalFilename());
+        prod.setImageType(imgfile.getContentType());
+        prod.setImageData(imgfile.getBytes()); // this will throws the excetption
+        return repo.save(prod);
     }
 
     public void updateProduct(Product prod) 
