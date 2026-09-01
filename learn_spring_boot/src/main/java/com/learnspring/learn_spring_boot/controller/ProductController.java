@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -50,7 +51,7 @@ public class ProductController
      }*/
     public ResponseEntity<?> addProduct(@RequestPart("prod") Product prod,@RequestPart("proImage") MultipartFile imgfile)
     {
-      /*this prod and proImage should need to match with frontend where i am sending the data */
+      /*this 'prod' and 'proImage' should need to match with frontend, where i am sending the data */
       try
       {
          Product prod1 = service.addProduct(prod,imgfile);
@@ -66,5 +67,14 @@ public class ProductController
      public void updateProduct(@RequestBody Product prod)
      {
         service.updateProduct(prod);
+     }
+
+     @GetMapping("/product/{id}/image")
+     public ResponseEntity<byte[]> getProductImageById(@PathVariable int prodId)
+     {
+      Product prod = service.getProductById(prodId);
+      byte[] imgfile = prod.getImageData();
+
+      return ResponseEntity.ok().body(imgfile);
      }
 }

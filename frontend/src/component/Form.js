@@ -29,6 +29,7 @@ class Form extends Component {
         /*formData.append('proId',this.state.proId);
         formData.append('proName',this.state.proName);
         formData.append('proPrice',this.state.proPrice);*/
+
         //this above code will not work because in the backend we are
         // expecting prod+img not (proId+proName+...proImage)
         // so we need to combine the all these in one prod
@@ -42,9 +43,11 @@ class Form extends Component {
         axios.post('http://localhost:8080/product',formData)
         .then(response => {
             console.log(response)
+            alert("Producted added successfully...")
         })
         .catch(error => {
             console.log(error)
+            alert("Not able to add the product, please try again...")
         })
     }
   render() {
