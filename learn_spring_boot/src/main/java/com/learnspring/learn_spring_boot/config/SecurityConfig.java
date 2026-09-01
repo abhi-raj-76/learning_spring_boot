@@ -5,6 +5,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -22,6 +26,25 @@ public class SecurityConfig {
         http.httpBasic(Customizer.withDefaults()); // enabled access through Post man / API
 
         return http.build();
+    }
+    @Bean
+    // this is for user validation from database
+    public UserDetailsService userDetailsService(){
+
+        UserDetails user1 = User
+            .withDefaultPasswordEncoder()
+            .username("raj")
+            .password("raj123")
+            .roles("USER")
+            .build();
+        
+        UserDetails user2 = User
+            .withDefaultPasswordEncoder()
+            .username("abhi")
+            .password("abhi123")
+            .roles("ADMIN")
+            .build();
+        return new InMemoryUserDetailsManager(user1,user2);
     }
 
 }
