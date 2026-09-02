@@ -11,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
@@ -31,6 +32,8 @@ public class SecurityConfig {
         http.csrf(customizer -> customizer.disable());
         http.authorizeHttpRequests(request -> request
             .requestMatchers("/h2-console/**").permitAll() // this will allow h2 console without authorization
+            .requestMatchers("/register").permitAll() // this will allow registering new user without authorization (because this dosen't make any sense)
+            //this api is from UserController POSTMapping
             .anyRequest().authenticated());
         // with this just above code, no one able to access the page without authentication
         http.headers(headers -> headers.frameOptions(frame -> frame.disable()));
@@ -68,7 +71,9 @@ public class SecurityConfig {
         DaoAuthenticationProvider provider = 
             new DaoAuthenticationProvider(userService); // this is the user service layer, created by me
 
-        provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        //provider.setPasswordEncoder(NoOpPasswordEncoder.getInstance());
+        // this will only work for plain text password
+        provider.setPasswordEncoder(new BCryptPasswordEncoder(12));
         return provider;
     }
 
