@@ -1,5 +1,6 @@
 package com.learnspring.learn_spring_boot.config;
 
+import org.apache.catalina.core.ApplicationContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +18,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.learnspring.learn_spring_boot.service.UserService;
 
@@ -29,6 +31,8 @@ public class SecurityConfig {
     private UserService userService;*/
     //removed above code for cyclic problem 
 
+    @Autowired
+    JWTFilter jwtFilter;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http){
 
@@ -46,6 +50,9 @@ public class SecurityConfig {
 
         http.formLogin(Customizer.withDefaults()); // enabled form UI
         http.httpBasic(Customizer.withDefaults()); // enabled access through Post man / API
+
+        // now adding validation code for JWT
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
