@@ -3,6 +3,9 @@ package com.learnspring.learn_spring_boot.service;
 import com.learnspring.learn_spring_boot.model.UserPrincipal;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -17,6 +20,9 @@ public class UserService implements UserDetailsService{
 
     @Autowired
     private UserRepo repo;
+
+    @Autowired 
+    JWTService jwtService;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -34,5 +40,15 @@ public class UserService implements UserDetailsService{
 
         user.setPassword(encoder.encode(user.getPassword()));
         return repo.save(user);
+    }
+
+    public String verify(Users user,AuthenticationManager authManager) {
+        Authentication auth = authManager.
+        authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), user.getPassword()));
+        if(auth.isAuthenticated()){
+            return jwtService.generateToken(user.getUsername());
+        }
+        return "fail to generate token";
+
     }
 }
